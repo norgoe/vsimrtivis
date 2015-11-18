@@ -39,7 +39,7 @@ import sample6_mapkit.VehicleInformation;
  * based on example 4 and 6 of Martin Steigers JXMapViewer2 examples
  * @author Norbert Goebel
  */
-public class ParseFiles {
+public class VSimRTIVis {
 
     public static final String MOVE_VEHICLE = "MOVE_VEHICLE";
     public static final String RECV_MESSAGE = "RECV_MESSAGE";
@@ -70,7 +70,7 @@ public class ParseFiles {
         try {
             Thread.sleep(2);
         } catch (InterruptedException ex) {
-            Logger.getLogger(ParseFiles.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VSimRTIVis.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
