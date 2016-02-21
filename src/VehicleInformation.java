@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sample6_mapkit;
 
 import java.awt.Color;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -89,9 +88,9 @@ public class VehicleInformation {
     }
 
     public Color getColor(long curtimens) {
-        if (this.name.equals("veh_4")) {
-            return Color.BLUE;
-        } else if (curtimens - lastEmergencyRectimeNs < 500000000) { //less than 500ms after receiving emergency message
+        if (this.name.equals("veh_9")) {
+            return Color.LIGHT_GRAY;
+        } else if (curtimens - lastEmergencyRectimeNs < 5000000000L) { //less than 5000ms after receiving emergency message
             return Color.RED;
         } else {
             return Color.GREEN;

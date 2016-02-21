@@ -1,3 +1,4 @@
+
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -32,11 +33,12 @@ import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.LocalResponseCache;
 import org.jxmapviewer.viewer.TileFactoryInfo;
 import org.jxmapviewer.viewer.WaypointPainter;
-import sample6_mapkit.VehicleInformation;
+
 
 /**
- * A simple sample application that uses JXMapKit
- * based on example 4 and 6 of Martin Steigers JXMapViewer2 examples
+ * A simple sample application that uses JXMapKit based on example 4 and 6 of
+ * Martin Steigers JXMapViewer2 examples
+ *
  * @author Norbert Goebel
  */
 public class VSimRTIVis {
@@ -154,38 +156,56 @@ public class VSimRTIVis {
 
         //String file = "/tmp/visualizer.csv";
         //String file = "/home/goebel/vsimrti0.15/logs/korrekt-mapping-log-20151117-145801-Taubental-large-etsi/visualizer.csv";
-        String file = "/home/goebel/vsimrti0.15/logs/korrekt-mapping-log-20151117-134001-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/korrekt-mapping-log-20151117-134001-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20151119-073220-Taubental-large-etsi/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20151119-092412-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20151119-112619-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20151119-123727-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20151119-130259-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20160221-091950-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20160221-124016-Taubental-large/visualizer.csv";
+        //String file = "/home/goebel/vsimrti0.15/logs/log-20160221-134255-Taubental-large/visualizer.csv";
+        String file = "/home/goebel/vsimrti0.15/logs/log-20160221-142005-Taubental-large/visualizer.csv";
+        
+        
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             String[] splits;
             long lasttime = 0;
             long curtime = 0;
-            while ((line = br.readLine()) != null) {
-                splits = line.split(";");
-                curtime = Long.parseLong(splits[1]);
-                if (curtime > lasttime) {
-                    lasttime = curtime;
-                    updateWaypoints(curtime);
-                }
-                if (splits[0].equals(MOVE_VEHICLE)) {
-                    if (vehicles.containsKey(splits[2])) {
-                        vehicles.get(splits[2]).update(splits);
-                    } else {
-                        vehicles.put(splits[2], new VehicleInformation(splits));
+            while (true) {
+                while ((line = br.readLine()) != null) {
+                    splits = line.split(";");
+                    curtime = Long.parseLong(splits[1]);
+                    if (curtime > lasttime) {
+                        lasttime = curtime;
+                        updateWaypoints(curtime);
                     }
-                } else if (splits[0].equals(RECV_MESSAGE) && splits[4].equals("EmergencyWarningMessage")) {
-                    if (!vehicles.containsKey(splits[3])) {
-                        System.err.println("No vehicle for message " + line + " in simulation!");
-                        System.err.println(vehicles.keySet().toString());
+                    if (splits[0].equals(MOVE_VEHICLE)) {
+                        if (vehicles.containsKey(splits[2])) {
+                            vehicles.get(splits[2]).update(splits);
+                        } else {
+                            vehicles.put(splits[2], new VehicleInformation(splits));
+                        }
+                    } else if (splits[0].equals(RECV_MESSAGE) && splits[4].equals("EmergencyWarningMessage")) {
+                        if (!vehicles.containsKey(splits[3])) {
+                            System.err.println("No vehicle for message " + line + " in simulation!");
+                            System.err.println(vehicles.keySet().toString());
+                        } else {
+                            vehicles.get(splits[3]).emergencyMessageReceived(Long.parseLong(splits[1]), Long.parseLong(splits[2]));
+                        }
+                        //RECV_MESSAGE;112105156375;379;veh_4;EmergencyWarningMessage
                     } else {
-                        vehicles.get(splits[3]).emergencyMessageReceived(Long.parseLong(splits[1]), Long.parseLong(splits[2]));
+                        //System.out.println(line);
                     }
-                    //RECV_MESSAGE;112105156375;379;veh_4;EmergencyWarningMessage
-                } else {
-                    //System.out.println(line);
-                }
 
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(VSimRTIVis.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
